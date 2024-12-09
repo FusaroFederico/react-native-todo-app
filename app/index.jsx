@@ -1,14 +1,20 @@
 import { Text, View, TextInput, Pressable, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { ThemeContext } from "@/context/ThemeContext";
+
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import Octicons from '@expo/vector-icons/Octicons'
 
 import { data } from "@/data/todos"
-import { styles } from "@/assets/style/style";
+import { createStyles } from "@/assets/style/style";
 
 export default function Index() {
 const [todos, setTodos] = useState(data.sort((a,b) => b.id - a.id));
 const [text, setText] = useState('');
+
+const { colorScheme, setColorScheme, theme } = useContext(ThemeContext);
+const styles = createStyles(theme, colorScheme);
 
 const addTodo = () => {
   if (text.trim()) {
@@ -54,6 +60,16 @@ const renderItem = ({ item }) => (
         />
         <Pressable onPress={addTodo} style={styles.addButton}>
           <Text style={styles.addButtonText}>Aggiungi</Text>
+        </Pressable>
+        <Pressable 
+        onPress={() => setColorScheme(colorScheme === 'light' ? 'dark' : 'light')}
+        style={styles.themeIcon}>
+          {colorScheme === 'dark' 
+          ? <Octicons name="moon" size={36} color={theme.text}
+              selectable={undefined} style={{ width: 36 }}/>
+            : <Octicons name="sun" size={36} color={theme.text}
+              selectable={undefined} style={{ width: 36 }}/>
+            }
         </Pressable>
       </View>
       <FlatList
